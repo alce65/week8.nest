@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from './entiites/task';
 
 const tasks: Task[] = [
@@ -53,6 +53,8 @@ export class TasksService {
       const task = this.tasks[index];
       this.tasks.splice(index, 1);
       return task;
+    } else {
+      throw new NotFoundException(`Task ${id} not found`);
     }
   }
 }
