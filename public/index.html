@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Backend sample in Fullstack bootcamp" />
+    <link rel="shortcut icon" href="favicon.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>API Rest NextJS</title>
+  </head>
+  <body>
+    <header>
+      <h1>API REST Sample made with NestJS / ExpressJS</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Características</h2>
+        <ul>
+          <li><b>Puerto</b> establecido desde environments</li>
+          <li><b>Cors</b> abierto</li>
+          <li><b>Statics</b> disponible desde la carpeta public</li>
+          <li><b>ORM</b> Prisma para acceder a una DB PostgreSql</li>
+          <li>
+            <h3>CRUD de tareas</h3>
+            <ul>
+              <li><b>Entities</b> definidas como interfaces</li>
+              <li><b>Dtos</b> definidos como clases</li>
+              <li>
+                <b>Validación</b> basada en el <b>pipe</b>
+                <code>ValidationPipe</code>
+              </li>
+              <li>
+                Librerías de <b>validación</b> <code>class-validator</code> y
+                <code>class-transformer</code>
+              </li>
+            </ul>
+          </li>
+
+          <!-- <li>CRUD de usuarios</li> -->
+        </ul>
+      </section>
+      <section>
+        <h2>Endpoints</h2>
+        <ul>
+          <li>[GET] <a href="./tasks">/tasks</a></li>
+          <li>[GET] <a href="./user/1">/tasks/:id</a></li>
+          <li>[POST] /tasks</li>
+          <li>[PATCH] /tasks/:id</li>
+          <li>[DELETE] /tasks/:id</li>
+          <li>[GET] <a href="./user">/users</a></li>
+          <li>[GET] <a href="./user/1">/users/:id</a></li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <address>ISDI - Coders</address>
+    </footer>
+  </body>
+</html>

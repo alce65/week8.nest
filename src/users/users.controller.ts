@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './entities/create-user.dto';
 import { UpdateUserDto } from './entities/update-user.dto';
 
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
