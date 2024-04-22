@@ -8,6 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
+import { CreateTaskDto, UpdateTaskDto } from './entiites/tasks.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -24,12 +25,12 @@ export class TasksController {
   }
 
   @Post()
-  async create(@Body() data: any) {
+  async create(@Body() data: CreateTaskDto) {
     return await this.taskService.create(data);
   }
 
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() data: any) {
+  async update(@Param('id') id: string, @Body() data: UpdateTaskDto) {
     return await this.taskService.update(id, data);
   }
 

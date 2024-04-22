@@ -1,32 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Task } from './entiites/task';
 import { PrismaService } from 'src/prisma/prisma.service';
-
-const tasks: Task[] = [
-  {
-    id: '1',
-    title: 'Task 1',
-    owner: 'Description 1',
-    isDone: false,
-  },
-  {
-    id: '2',
-    title: 'Task 2',
-    owner: 'Description 2',
-    isDone: false,
-  },
-  {
-    id: '3',
-    title: 'Task 3',
-    owner: 'Description 3',
-    isDone: false,
-  },
-];
+import { CreateTaskDto, UpdateTaskDto } from './entiites/tasks.dto';
 
 @Injectable()
 export class TasksService {
   constructor(private prisma: PrismaService) {}
-  tasks: Task[] = tasks;
 
   async findAll() {
     return this.prisma.task.findMany();
@@ -43,13 +21,13 @@ export class TasksService {
     return task;
   }
 
-  async create(data: Omit<Task, 'id'>) {
+  async create(data: CreateTaskDto) {
     return this.prisma.task.create({
       data,
     });
   }
 
-  async update(id: string, data: Partial<Omit<Task, 'id'>>) {
+  async update(id: string, data: UpdateTaskDto) {
     try {
       return await this.prisma.task.update({
         where: { id },
