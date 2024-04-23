@@ -10,8 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './entities/create-user.dto';
-import { UpdateUserDto } from './entities/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 @Controller('users')

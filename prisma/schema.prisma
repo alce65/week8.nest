@@ -14,10 +14,13 @@ datasource db {
 }
 
 model Task {
-  id        String   @id @default(cuid())
-  title     String
-  owner     String
-  isDone    Boolean @default(false)
+  id      String  @id @default(cuid())
+  title   String
+  owner   User    @relation(fields: [ownerId], references: [id])
+  ownerId String
+  isDone  Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("tasks")
 }
@@ -27,6 +30,9 @@ model User {
   email    String @unique
   password String
   role     Role   @default(user)
+  tasks    Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   @@map("users")
 }

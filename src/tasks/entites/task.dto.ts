@@ -5,7 +5,7 @@ export class CreateTaskDto {
   @MinLength(3, { message: 'Title is too short' })
   title: string;
   @IsString()
-  owner: string;
+  ownerId: string;
 }
 
 export class UpdateTaskDto {
@@ -15,7 +15,7 @@ export class UpdateTaskDto {
   title?: string;
   @IsString()
   @IsOptional()
-  owner?: string;
+  ownerId?: string;
   @IsBoolean()
   @IsOptional()
   isDone?: boolean;

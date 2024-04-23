@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { CreateTaskDto, UpdateTaskDto } from './entiites/tasks.dto';
+import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
 
 @UsePipes(
   new ValidationPipe({
