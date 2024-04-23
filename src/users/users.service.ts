@@ -39,6 +39,23 @@ export class UsersService {
     return user;
   }
 
+  async findForLogin(email: string): Promise<{
+    password: string;
+    id: string;
+    role: string;
+  } | null> {
+    const result = await this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        password: true,
+        id: true,
+        role: true,
+      },
+    });
+
+    return result;
+  }
+
   async create(data: CreateUserDto): Promise<User> {
     return this.prisma.user.create({
       data,

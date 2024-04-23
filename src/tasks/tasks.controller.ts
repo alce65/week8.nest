@@ -6,11 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
+import { AuthGuard } from 'src/core/auth/auth.guard';
 
 @UsePipes(
   new ValidationPipe({
@@ -18,6 +20,7 @@ import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
     forbidNonWhitelisted: true,
   }),
 )
+@UseGuards(AuthGuard)
 @Controller('tasks')
 export class TasksController {
   constructor(private taskService: TasksService) {}
