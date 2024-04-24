@@ -15,9 +15,9 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
-import { CryptoService } from 'src/core/crypto/crypto.service';
+import { CryptoService } from '../core/crypto/crypto.service';
 import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from 'src/core/auth/auth.guard';
+import { AuthGuard } from '../core/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -36,7 +36,7 @@ export class UsersController {
   }
 
   @Post('login')
-  async Login(@Body() createUserDto: CreateUserDto) {
+  async login(@Body() createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
     if (!email || !password) {
       throw new BadRequestException('Email and password are required');
