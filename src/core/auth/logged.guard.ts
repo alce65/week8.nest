@@ -5,15 +5,11 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import { CryptoService } from '../crypto/crypto.service';
 
 @Injectable()
 export class LoggedGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly cryptoService: CryptoService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -23,10 +19,7 @@ export class LoggedGuard implements CanActivate {
     }
     const token = auth.split(' ')[1];
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('SECRET_JWT'),
-      });
-      request.payload = payload;
+      request.payload = await this.cryptoService.verifyToken(token);
       return true;
     } catch (error) {
       throw new ForbiddenException('Invalid token');

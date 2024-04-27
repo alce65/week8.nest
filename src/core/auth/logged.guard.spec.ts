@@ -1,23 +1,19 @@
-import { JwtService } from '@nestjs/jwt';
 import { LoggedGuard } from './logged.guard';
-import { ConfigService } from '@nestjs/config';
 import { ExecutionContext } from '@nestjs/common';
+import { CryptoService } from '../crypto/crypto.service';
 
-const jwtServiceMock: JwtService = {
-  verifyAsync: jest.fn().mockResolvedValue({}),
-} as unknown as JwtService;
-const configServiceMock: ConfigService = {
-  get: jest.fn().mockReturnValue('SECRET_JWT'),
-} as unknown as ConfigService;
+const cryptoServiceMock: CryptoService = {
+  verifyToken: jest.fn().mockResolvedValue({}),
+} as unknown as CryptoService;
 
 describe('AuthGuard', () => {
+  const loggedGuard = new LoggedGuard(cryptoServiceMock);
   it('should be defined', () => {
-    expect(new LoggedGuard(jwtServiceMock, configServiceMock)).toBeDefined();
+    expect(loggedGuard).toBeDefined();
   });
 
   describe('When we call canActivate method', () => {
     it('should return true', async () => {
-      const guard = new LoggedGuard(jwtServiceMock, configServiceMock);
       const context = {
         switchToHttp: () => ({
           getRequest: () => ({
@@ -27,13 +23,12 @@ describe('AuthGuard', () => {
           }),
         }),
       } as any;
-      const result = await guard.canActivate(context);
+      const result = await loggedGuard.canActivate(context);
       expect(result).toBe(true);
     });
 
     describe('And there are NOT Authorization header', () => {
       it('should throw BadRequestException', async () => {
-        const guard = new LoggedGuard(jwtServiceMock, configServiceMock);
         const context = {
           switchToHttp: () => ({
             getRequest: () => ({
@@ -42,7 +37,7 @@ describe('AuthGuard', () => {
           }),
         } as ExecutionContext;
         try {
-          await guard.canActivate(context);
+          await loggedGuard.canActivate(context);
         } catch (error) {
           expect(error.message).toBe('Authorization header is required');
         }
@@ -51,7 +46,6 @@ describe('AuthGuard', () => {
 
     describe('And token is invalid', () => {
       it('should throw ForbiddenException', async () => {
-        const guard = new LoggedGuard(jwtServiceMock, configServiceMock);
         const context = {
           switchToHttp: () => ({
             getRequest: () => ({
@@ -61,9 +55,11 @@ describe('AuthGuard', () => {
             }),
           }),
         } as ExecutionContext;
-        jwtServiceMock.verifyAsync = jest.fn().mockRejectedValue(new Error());
+        cryptoServiceMock.verifyToken = jest
+          .fn()
+          .mockRejectedValue(new Error());
         try {
-          await guard.canActivate(context);
+          await loggedGuard.canActivate(context);
         } catch (error) {
           expect(error.message).toBe('Invalid token');
         }

@@ -154,7 +154,6 @@ Nuevo framework [NestJS](https://nestjs.com/) incorporado en el bootcamp.
 - Añadir un método en el controller para hacer login
 - Añadir una Guard de authentication para proteger los endpoints de la aplicación
 
-
 ## Evolución de la aplicación (fuera de clase)
 
 ### Autorización: Roles y Permisos
