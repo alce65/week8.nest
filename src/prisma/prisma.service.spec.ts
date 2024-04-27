@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from './prisma.service';
+import { Logger } from '@nestjs/common';
 
 jest.mock('@prisma/client', () => ({
   PrismaClient: function () {
@@ -12,7 +13,7 @@ describe('PrismaService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PrismaService],
+      providers: [PrismaService, Logger],
     }).compile();
 
     service = module.get<PrismaService>(PrismaService);
