@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Headers,
   Patch,
   Param,
   Delete,
@@ -16,9 +15,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { CryptoService } from '../core/crypto/crypto.service';
-import { ConfigService } from '@nestjs/config';
 import { LoggedGuard } from '../core/auth/logged.guard';
-import { JwtService } from '@nestjs/jwt';
 
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 @Controller('users')
@@ -26,13 +23,18 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly cryptoService: CryptoService,
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
   ) {}
 
+  @UseGuards(LoggedGuard)
   @Get('login')
-  async TokenLogin(@Headers('Authorization') auth: string) {
-    console.log(auth);
+  async loginWithToken(@Body() validData: { payload: { id: string } }) {
+    const userId = validData.payload.id;
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new ForbiddenException('Email and password invalid');
+    }
+
+    return { token: await this.cryptoService.createToken(user) };
   }
 
   @Post('login')
@@ -52,12 +54,7 @@ export class UsersController {
       throw new ForbiddenException('Email and password invalid');
     }
 
-    const token = await this.jwtService.signAsync(
-      { id: user.id, role: user.role },
-      { secret: this.configService.get('SECRET_JWT') },
-    );
-
-    return { token };
+    return { token: await this.cryptoService.createToken(user) };
   }
 
   @Post()

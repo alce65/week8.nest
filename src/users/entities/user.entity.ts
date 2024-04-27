@@ -9,3 +9,10 @@ export class User {
   role: Role;
   tasks: Array<Omit<Task, 'owner'>>;
 }
+
+export class SignUser {
+  id: string;
+  email?: string;
+  password: string;
+  role: Role;
+}

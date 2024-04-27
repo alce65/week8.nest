@@ -14,7 +14,7 @@ import {
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
 import { LoggedGuard } from '../core/auth/logged.guard';
-import { CreatorGuard } from 'src/core/auth/creator.guard';
+import { CreatorGuard } from '../core/auth/creator.guard';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Owner = (creatorId: string) => SetMetadata('ownerKey', creatorId);

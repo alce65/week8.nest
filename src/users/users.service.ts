@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
-import { User } from './entities/user.entity';
+import { SignUser, User } from './entities/user.entity';
 
 const select = {
   id: true,
@@ -39,16 +39,12 @@ export class UsersService {
     return user;
   }
 
-  async findForLogin(email: string): Promise<{
-    password: string;
-    id: string;
-    role: string;
-  } | null> {
+  async findForLogin(email: string): Promise<SignUser | null> {
     const result = await this.prisma.user.findUnique({
       where: { email },
       select: {
-        password: true,
         id: true,
+        password: true,
         role: true,
       },
     });
