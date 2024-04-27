@@ -15,7 +15,7 @@ Nuevo framework [NestJS](https://nestjs.com/) incorporado en el bootcamp.
   - tsconfig.json
   - package.json
   - nest-cli.json
-  - jest (sin configuración)
+  - jest (configuración en package.json)
 
 - Elementos de la aplicación
   - `main.ts`
@@ -76,9 +76,21 @@ Nuevo framework [NestJS](https://nestjs.com/) incorporado en el bootcamp.
   - Añadir el endpoint al módulo importando el controller y añadiéndolo al array de `controllers`
   - Añadir el endpoint al `app.module.ts` importando el módulo y añadiéndolo al array de `imports`
   - Arrancar el servidor con `npm run start:dev`
-  - Probar el endpoint con Postman o curl
+  - Probar el endpoint con Postman
+
+- Añadir acceso a una base de datos:
+  - Instalar un ORM como Prisma con `npm install @prisma/cli @prisma/client`
+  - Configurar Prisma con `npx prisma init`
+  - Crear un modelo de datos en `schema.prisma`
+  - Generar un cliente de Prisma y una primera migración con `npx prisma migrate dev --name init`
+  - Comprobar  un modelo de datos con `npx prisma studio`
+  - Añadir al servicio TaskService las operaciones para acceder a la base de datos
+  - Arrancar el servidor con `npm run start:dev`
+  - Probar el endpoint con Postman
 
 - Añadimos usuarios:
+  - Añadir el modelo de datos de usuario a Prisma
+  - Generar una nueva migración con `npx prisma migrate dev --name add-user`
   - Creamos un interface con `nest g interface entities/user`
   - Creamos un nuevo interface con `nest g interface users/dto/create-user.dto`
   - Creamos un nuevo módulo con `nest g module users/users`
@@ -89,7 +101,7 @@ Nuevo framework [NestJS](https://nestjs.com/) incorporado en el bootcamp.
   - Añadimos el endpoint al módulo importando el controller y añadiéndolo al array de `controllers`
   - Añadimos el módulo al `app.module.ts` importando el módulo y añadiéndolo al array de `imports`
   - Arrancamos el servidor con `npm run start:dev`
-  - Probamos el endpoint con Postman o curl
+  - Probamos el endpoint con Postman
 
 - Ajustes en la configuración de la aplicación
 
@@ -117,3 +129,39 @@ Nuevo framework [NestJS](https://nestjs.com/) incorporado en el bootcamp.
   - el decorador `@HttpCode` para devolver un código de estado HTTP adecuado.
   
   - se pueden manejar con un middleware de errores. Para ello, se añade un middleware de errores al módulo principal de la aplicación con el decorador `@Catch` y se añade al array de `providers`. El middleware de errores debe implementar la interfaz `ExceptionFilter` y sobre-escribir el método `catch` para manejar los errores.
+
+### Challenge 1
+
+## Evolución de la aplicación (día 2)
+
+- Relaciones entre entidades
+- Añadir una relación uno a muchos entre dos entidades Usuarios y Tareas (n:1)
+- Actualizar el modelo de datos en Prisma
+- Generar una nueva migración con `npx prisma migrate dev --name add-relation`
+- Actualiza entidades y DTOs
+- Actualizar los servicios TaskService y UserService para acceder a la base de datos
+- Actualizar los controllers TaskController y UserController para añadir nuevos endpoints
+- Comprobar el funcionamiento de los endpoints con Postman
+
+### Autenticación: Login y Registro de usuarios
+
+- Instalamos [bcrypt](https://www.npmjs.com/package/bcrypt) con `npm install bcrypt`
+- Crear un servicio que encapsula las operaciones de hash y comprobación de contraseñas
+- Modificar el controller para incluir hash de la password usando el servicio
+- Añadir un endpoint para hacer login en el controller
+- Añadir un método en el servicio localizar usuarios al hacer login
+- Instalar [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) con `npm install @nestjs/jwt`  
+- Añadir un método en el controller para hacer login
+- Añadir una Guard de authentication para proteger los endpoints de la aplicación
+
+
+## Evolución de la aplicación (fuera de clase)
+
+### Autorización: Roles y Permisos
+
+- Añadir en taskModule un token y un provider para el servicio repositorio
+- Añadir una Guard para comprobar el 'propietario' de un recurso (e.g. una tarea)
+  - Usa el servicio repo que le proporcione el módulo
+  - Unas el nombre del campo con la foreign key proporcionado como metadato
+  - Se inyecta reflector para poder leer ese metadato
+- Usar la Guard en Task Controller para proteger los endpoints de update y delete
