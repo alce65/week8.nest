@@ -1,22 +1,23 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { JwtModule } from '@nestjs/jwt';
+import { CoreModule } from 'src/core/core.module';
 
-// export const REPO_SERVICE = 'REPO_SERVICE';
 export type RepoFindId = {
   findById(id: string): Promise<any>;
 };
 
+export const REPO_SERVICE = 'REPO_SERVICE';
+
 @Module({
-  imports: [PrismaModule, JwtModule],
+  imports: [PrismaModule, CoreModule],
   providers: [
     {
       provide: 'REPO_SERVICE',
       useClass: TasksService,
     },
-    TasksService,
+    Logger,
   ],
   controllers: [TasksController],
 })

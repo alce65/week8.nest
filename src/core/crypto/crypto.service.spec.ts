@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { hash, compare } from 'bcrypt';
 import { SignUser } from 'src/users/entities/user.entity';
+import { Logger } from '@nestjs/common';
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashedValue'),
   compare: jest.fn().mockResolvedValue(true),
@@ -28,6 +29,7 @@ describe('CryptoService', () => {
         { provide: JwtService, useValue: jwtServiceMock },
         { provide: ConfigService, useValue: configServiceMock },
         CryptoService,
+        Logger,
       ],
     }).compile();
 

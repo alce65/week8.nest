@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RepoFindId } from '../../tasks/tasks.module';
@@ -16,9 +17,12 @@ import { RepoFindId } from '../../tasks/tasks.module';
 @Injectable()
 export class CreatorGuard implements CanActivate {
   constructor(
+    private readonly logger: Logger,
     @Inject('REPO_SERVICE') private repo: RepoFindId,
     private reflector: Reflector,
-  ) {}
+  ) {
+    this.logger.debug('CreatorGuard instantiated');
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();

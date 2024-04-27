@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
+  Logger,
   Param,
   Patch,
   Post,
@@ -27,7 +29,12 @@ const Owner = (creatorId: string) => SetMetadata('ownerKey', creatorId);
 @UseGuards(LoggedGuard)
 @Controller('tasks')
 export class TasksController {
-  constructor(private taskService: TasksService) {}
+  constructor(
+    private readonly logger: Logger,
+    @Inject('REPO_SERVICE') private taskService: TasksService,
+  ) {
+    this.logger.debug('TasksController instantiated');
+  }
 
   @Get()
   async getAll() {

@@ -8,5 +8,6 @@ async function bootstrap() {
   app.enableCors();
   app.useStaticAssets('public');
   await app.listen(PORT);
+  console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

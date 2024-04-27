@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { SignUser, User } from './entities/user.entity';
@@ -18,7 +18,12 @@ const select = {
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logger: Logger,
+  ) {
+    this.logger.debug('UsersService instantiated');
+  }
 
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany({

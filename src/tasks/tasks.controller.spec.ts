@@ -3,6 +3,7 @@ import { TasksController } from './tasks.controller';
 import { LoggedGuard } from '../core/auth/logged.guard';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
+import { Logger } from '@nestjs/common';
 
 const mockLoggedGuard = {};
 const mockTasksService: TasksService = {
@@ -27,6 +28,7 @@ describe('TasksController', () => {
           provide: 'REPO_SERVICE',
           useValue: mockTasksService,
         },
+        Logger,
       ],
       controllers: [TasksController],
     })

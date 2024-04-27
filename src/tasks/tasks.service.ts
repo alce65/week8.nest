@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto, UpdateTaskDto } from './entites/task.dto';
 import { Task } from './entites/task.entity';
@@ -18,7 +18,12 @@ const select = {
 
 @Injectable()
 export class TasksService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logger: Logger,
+  ) {
+    this.logger.debug('TasksService instantiated');
+  }
 
   async findAll(): Promise<Task[]> {
     return this.prisma.task.findMany({

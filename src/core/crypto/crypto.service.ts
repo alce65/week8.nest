@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { hash, compare } from 'bcrypt';
@@ -12,9 +12,12 @@ export type TokenPayload = {
 @Injectable()
 export class CryptoService {
   constructor(
+    private readonly logger: Logger,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.logger.debug('CryptoService instantiated');
+  }
 
   async hash(value: string) {
     return hash(value, 10);

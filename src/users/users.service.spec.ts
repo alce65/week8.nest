@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './entities/user.dto';
+import { Logger } from '@nestjs/common';
 
 const mockPrisma = {
   user: {
@@ -24,6 +25,7 @@ describe('Given the class UsersService', () => {
           useValue: mockPrisma,
         },
         UsersService,
+        Logger,
       ],
     }).compile();
 

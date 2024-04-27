@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { CryptoService } from '../core/crypto/crypto.service';
 import { CreateUserDto } from './entities/user.dto';
 import { LoggedGuard } from '../core/auth/logged.guard';
+import { Logger } from '@nestjs/common';
 
 const mockUsersService = {
   findAll: jest.fn().mockResolvedValue([]),
@@ -35,6 +36,7 @@ describe('UsersController', () => {
           provide: CryptoService,
           useValue: mockCryptoService,
         },
+        Logger,
       ],
     })
       .overrideGuard(LoggedGuard)

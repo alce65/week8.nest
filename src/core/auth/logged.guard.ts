@@ -4,12 +4,18 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { CryptoService } from '../crypto/crypto.service';
 
 @Injectable()
 export class LoggedGuard implements CanActivate {
-  constructor(private readonly cryptoService: CryptoService) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly cryptoService: CryptoService,
+  ) {
+    this.logger.debug('LoggedGuard instantiated');
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();

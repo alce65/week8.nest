@@ -11,6 +11,7 @@ import {
   BadRequestException,
   ForbiddenException,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
@@ -21,9 +22,12 @@ import { LoggedGuard } from '../core/auth/logged.guard';
 @Controller('users')
 export class UsersController {
   constructor(
+    private readonly logger: Logger,
     private readonly usersService: UsersService,
     private readonly cryptoService: CryptoService,
-  ) {}
+  ) {
+    this.logger.debug('UsersController instantiated');
+  }
 
   @UseGuards(LoggedGuard)
   @Get('login')

@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TasksService } from './tasks.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTaskDto } from './entites/task.dto';
+import { Logger } from '@nestjs/common';
 
 const mockPrisma = {
   task: {
@@ -24,6 +25,7 @@ describe('Given a instance of the class TasksService', () => {
           useValue: mockPrisma,
         },
         TasksService,
+        Logger,
       ],
     }).compile();
 
