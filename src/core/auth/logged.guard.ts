@@ -14,7 +14,7 @@ export class LoggedGuard implements CanActivate {
     private readonly logger: Logger,
     private readonly cryptoService: CryptoService,
   ) {
-    this.logger.debug('LoggedGuard instantiated');
+    this.logger.debug('Instantiated', 'LoggedGuard');
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

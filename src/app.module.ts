@@ -37,7 +37,7 @@ import { LogMiddleware } from './core/logger/log.middleware';
 })
 export class AppModule implements NestModule {
   constructor(private readonly logger: Logger) {
-    this.logger.debug('AppModule instantiated');
+    this.logger.debug('Instantiated', 'AppModule');
     config;
   }
   configure(consumer: MiddlewareConsumer) {

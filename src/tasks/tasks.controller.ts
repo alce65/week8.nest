@@ -33,7 +33,7 @@ export class TasksController {
     private readonly logger: Logger,
     @Inject('REPO_SERVICE') private taskService: TasksService,
   ) {
-    this.logger.debug('TasksController instantiated');
+    this.logger.debug('Instantiated', 'TasksController');
   }
 
   @Get()

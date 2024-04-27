@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor(private readonly logger: Logger) {
     super();
-    this.logger.debug('PrismaService instantiated');
+    this.logger.debug('Instantiated', 'PrismaService');
   }
   async onModuleInit() {
     await this.$connect();

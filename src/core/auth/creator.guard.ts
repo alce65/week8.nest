@@ -21,7 +21,7 @@ export class CreatorGuard implements CanActivate {
     @Inject('REPO_SERVICE') private repo: RepoFindId,
     private reflector: Reflector,
   ) {
-    this.logger.debug('CreatorGuard instantiated');
+    this.logger.debug('Instantiated', 'CreatorGuard');
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

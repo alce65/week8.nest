@@ -7,7 +7,7 @@ export class AppController {
     private readonly appService: AppService,
     private readonly logger: Logger,
   ) {
-    this.logger.debug('AppController instantiated');
+    this.logger.debug('Instantiated', 'AppController');
   }
 
   @Get()

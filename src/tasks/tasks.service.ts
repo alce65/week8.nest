@@ -22,7 +22,7 @@ export class TasksService {
     private prisma: PrismaService,
     private readonly logger: Logger,
   ) {
-    this.logger.debug('TasksService instantiated');
+    this.logger.debug('Instantiated', 'TasksService');
   }
 
   async findAll(): Promise<Task[]> {

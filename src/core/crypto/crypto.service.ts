@@ -16,7 +16,7 @@ export class CryptoService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.logger.debug('CryptoService instantiated');
+    this.logger.debug('Instantiated', 'CryptoService');
   }
 
   async hash(value: string) {

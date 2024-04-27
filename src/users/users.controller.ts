@@ -26,7 +26,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly cryptoService: CryptoService,
   ) {
-    this.logger.debug('UsersController instantiated');
+    this.logger.debug('Instantiated', 'UsersController');
   }
 
   @UseGuards(LoggedGuard)
