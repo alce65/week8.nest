@@ -17,7 +17,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { CryptoService } from '../core/crypto/crypto.service';
 import { ConfigService } from '@nestjs/config';
-import { AuthGuard } from '../core/auth/auth.guard';
+import { LoggedGuard } from '../core/auth/logged.guard';
 import { JwtService } from '@nestjs/jwt';
 
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -78,7 +78,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(LoggedGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
@@ -89,7 +89,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(LoggedGuard)
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.usersService.delete(id);
