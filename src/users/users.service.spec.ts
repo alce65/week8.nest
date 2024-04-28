@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './entities/user.dto';
 import { Logger } from '@nestjs/common';
+import { ImgData } from 'src/types/image.data';
 
 const mockPrisma = {
   user: {
@@ -12,6 +13,10 @@ const mockPrisma = {
     update: jest.fn().mockReturnValue({}),
     delete: jest.fn().mockReturnValue({}),
   },
+  avatar: {
+    delete: jest.fn().mockReturnValue({}),
+  },
+  $transaction: jest.fn().mockResolvedValue([{}, {}]),
 };
 
 describe('Given the class UsersService', () => {
@@ -66,25 +71,49 @@ describe('Given the class UsersService', () => {
   });
 
   describe('When we use the method create', () => {
-    it('Then it should return the created user', async () => {
-      const data: CreateUserDto = {} as CreateUserDto;
-      const result = await service.create(data);
-      expect(mockPrisma.user.create).toHaveBeenCalled();
-      expect(result).toEqual({});
+    describe('And we do not provide an image', () => {
+      it('Then it should return the created user', async () => {
+        const data: CreateUserDto = {} as CreateUserDto;
+        const result = await service.create(data, null);
+        expect(mockPrisma.user.create).toHaveBeenCalled();
+        expect(result).toEqual({});
+      });
+    });
+    describe('And we provide an image', () => {
+      it('Then it should return the created user with the image', async () => {
+        const data: CreateUserDto = {} as CreateUserDto;
+        const imgData = {} as ImgData;
+        const result = await service.create(data, imgData);
+        expect(mockPrisma.user.create).toHaveBeenCalled();
+        expect(result).toEqual({});
+      });
     });
   });
 
   describe('When we use the method update', () => {
-    it('Then it should return the updated user', async () => {
-      const result = await service.update('1', {} as CreateUserDto);
-      expect(mockPrisma.user.update).toHaveBeenCalled();
-      expect(result).toEqual({});
+    describe('And we do not provide an image', () => {
+      it('Then it should return the updated user', async () => {
+        const result = await service.update('1', {} as CreateUserDto, null);
+        expect(mockPrisma.user.update).toHaveBeenCalled();
+        expect(result).toEqual({});
+      });
     });
-
-    it('Then it should throw an error if the user is not found', async () => {
-      mockPrisma.user.update.mockRejectedValue(new Error());
-      const data: CreateUserDto = {} as CreateUserDto;
-      expect(service.update('1', data)).rejects.toThrow('User 1 not found');
+    describe('And we provide an image', () => {
+      it('Then it should return the updated user with the image', async () => {
+        const imgData = {} as ImgData;
+        const result = await service.update('1', {} as CreateUserDto, imgData);
+        expect(mockPrisma.user.update).toHaveBeenCalled();
+        expect(result).toEqual({});
+      });
+    });
+    describe('And the user is not found', () => {
+      it('Then it should throw an error', async () => {
+        mockPrisma.user.update.mockRejectedValue(new Error());
+        const data: CreateUserDto = {} as CreateUserDto;
+        expect(service.update('1', data, null)).rejects.toThrow(
+          'User 1 not found',
+        );
+      });
     });
   });
 
@@ -96,7 +125,7 @@ describe('Given the class UsersService', () => {
     });
 
     it('Then it should throw an error if the user is not found', async () => {
-      mockPrisma.user.delete.mockRejectedValue(new Error());
+      mockPrisma.$transaction.mockRejectedValueOnce(new Error());
       expect(service.delete('1')).rejects.toThrow('User 1 not found');
     });
   });

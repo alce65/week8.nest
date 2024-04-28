@@ -5,6 +5,7 @@ import { CryptoService } from '../core/crypto/crypto.service';
 import { CreateUserDto } from './entities/user.dto';
 import { LoggedGuard } from '../core/auth/logged.guard';
 import { Logger } from '@nestjs/common';
+import { FilesService } from '../core/files/files.service';
 
 const mockUsersService = {
   findAll: jest.fn().mockResolvedValue([]),
@@ -21,6 +22,10 @@ const mockCryptoService = {
   createToken: jest.fn().mockResolvedValue('token'),
 };
 
+const mockFileService = {
+  uploadImage: jest.fn().mockResolvedValue({}),
+};
+
 describe('UsersController', () => {
   let controller: UsersController;
 
@@ -35,6 +40,10 @@ describe('UsersController', () => {
         {
           provide: CryptoService,
           useValue: mockCryptoService,
+        },
+        {
+          provide: FilesService,
+          useValue: mockFileService,
         },
         Logger,
       ],
@@ -124,10 +133,11 @@ describe('UsersController', () => {
       expect(result).toEqual({});
     });
   });
-  describe('When we use the method create', () => {
+  describe('When we use the method register', () => {
     it('should create a new user', async () => {
       const mockUserDto = {} as CreateUserDto;
-      const result = await controller.create(mockUserDto);
+      const mockFile = {} as Express.Multer.File;
+      const result = await controller.register(mockUserDto, mockFile);
       expect(mockUsersService.create).toHaveBeenCalled();
       expect(result).toEqual({});
     });
@@ -137,7 +147,8 @@ describe('UsersController', () => {
       const mockUserDto = {
         password: '12345',
       } as CreateUserDto;
-      const result = await controller.update('1', mockUserDto);
+      const mockFile = {} as Express.Multer.File;
+      const result = await controller.update('1', mockUserDto, mockFile);
       expect(mockUsersService.update).toHaveBeenCalled();
       expect(result).toEqual({});
     });

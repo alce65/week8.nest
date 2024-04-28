@@ -200,6 +200,28 @@ Se añaden ejemplos de como hacerlo en guardas, interceptores y middleware
 
 Para usarlos en todas las rutas, se pueden añadir de forma global en el modulo principal de la aplicación (app.module.ts)
 
+### Incorporación de imágenes
+
+- Al utilizar NestJS, NO se necesita instalar la librería `multer`, ya integrada en el framework.
+- De acuerdo con la documentación, solo se añaden los tipos: `npm i -D @types/multer`
+- Al utilizar Cloudinary, se necesita instalar la librería `cloudinary` con `npm install cloudinary`
+
+- En el esquema de Prisma, se añade una entidad Avatar para la información de la imagen, acorde con el tipo añadido ImgData
+- La relación de Avatar con User es 1:1
+- La entidad Task se ajusta para que al tomar la información del usuario, no incluya la información del avatar
+
+- En el controller de usuario, se modifican los métodos que reciben la imagen (register y update)
+  - Se añade el interceptor `FileInterceptor` para manejar la subida de la imagen
+  - Se añade el decorador `@UploadedFile` para acceder a la información de la imagen
+
+- Se añade un servicio FilesService para manejar la subida de la imagen a Cloudinary que recibe directamente un buffer con la información de la imagen y devuelve los datos de la imagen subida, incluida su URL
+
+- Se modifican los métodos del servicio de acuerdo con los cambios:
+  - create y update para que reciban la información de la imagen y la guarden en la DB
+  - delete para que elimine la imagen del usuario que va a ser eliminado, creando con ambos procesos una transacción 
+
+
+- 
 ### Gestión de errores
 
 - Gestión de Errores (Middleware de errores):

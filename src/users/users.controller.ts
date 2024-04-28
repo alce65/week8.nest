@@ -12,11 +12,19 @@ import {
   ForbiddenException,
   UseGuards,
   Logger,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { CryptoService } from '../core/crypto/crypto.service';
 import { LoggedGuard } from '../core/auth/logged.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesService } from '../core/files/files.service';
+import { ImgData } from '../types/image.data';
 
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 @Controller('users')
@@ -25,6 +33,7 @@ export class UsersController {
     private readonly logger: Logger,
     private readonly usersService: UsersService,
     private readonly cryptoService: CryptoService,
+    private readonly filesService: FilesService,
   ) {
     this.logger.debug('Instantiated', 'UsersController');
   }
@@ -61,12 +70,47 @@ export class UsersController {
     return { token: await this.cryptoService.createToken(user) };
   }
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
+  @UseInterceptors(FileInterceptor('avatar'))
+  @Post('register')
+  async register(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 100_000 }),
+          new FileTypeValidator({ fileType: 'image/' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const { email } = createUserDto;
+    let avatar: ImgData | null = null;
+    if (file) {
+      const cloudinaryResponse = await this.filesService.uploadImage(
+        email,
+        file,
+      );
+      avatar = {
+        publicId: cloudinaryResponse.public_id,
+        folder: cloudinaryResponse.folder,
+        fieldName: file.fieldname,
+        originalName: file.originalname,
+        secureUrl: cloudinaryResponse.secure_url,
+        resourceType: cloudinaryResponse.resource_type,
+        mimetype: file.mimetype,
+        format: cloudinaryResponse.format,
+        width: cloudinaryResponse.width,
+        height: cloudinaryResponse.height,
+        bytes: cloudinaryResponse.bytes,
+      };
+    }
+
     createUserDto.password = await this.cryptoService.hash(
       createUserDto.password,
     );
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto, avatar);
   }
 
   @Get()
@@ -80,14 +124,50 @@ export class UsersController {
   }
 
   @UseGuards(LoggedGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 100_000 }),
+          new FileTypeValidator({ fileType: 'image/' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const email =
+      updateUserDto.email || (await this.usersService.findOne(id)).email;
+    let avatar: ImgData | null = null;
+    if (file) {
+      const cloudinaryResponse = await this.filesService.uploadImage(
+        email,
+        file,
+      );
+      avatar = {
+        publicId: cloudinaryResponse.public_id,
+        folder: cloudinaryResponse.folder,
+        fieldName: file.fieldname,
+        originalName: file.originalname,
+        secureUrl: cloudinaryResponse.secure_url,
+        resourceType: cloudinaryResponse.resource_type,
+        mimetype: file.mimetype,
+        format: cloudinaryResponse.format,
+        width: cloudinaryResponse.width,
+        height: cloudinaryResponse.height,
+        bytes: cloudinaryResponse.bytes,
+      };
+    }
     if (updateUserDto.password) {
       updateUserDto.password = await this.cryptoService.hash(
         updateUserDto.password,
       );
     }
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto, avatar);
   }
 
   @UseGuards(LoggedGuard)

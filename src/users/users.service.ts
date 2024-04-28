@@ -2,6 +2,9 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { SignUser, User } from './entities/user.entity';
+import { ImgData } from '../types/image.data';
+
+// const av: AvatarCreateNestedOneWithoutUserInput;
 
 const select = {
   id: true,
@@ -12,6 +15,11 @@ const select = {
       id: true,
       title: true,
       isDone: true,
+    },
+  },
+  avatar: {
+    select: {
+      publicId: true,
     },
   },
 };
@@ -57,18 +65,35 @@ export class UsersService {
     return result;
   }
 
-  async create(data: CreateUserDto): Promise<User> {
+  async create(data: CreateUserDto, imgData: ImgData | null): Promise<User> {
     return this.prisma.user.create({
-      data,
+      data: {
+        ...data,
+        avatar: imgData ? { create: imgData } : {},
+      },
       select,
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(
+    id: string,
+    data: UpdateUserDto,
+    imgData: ImgData | null,
+  ): Promise<User> {
     try {
       return await this.prisma.user.update({
         where: { id },
-        data: updateUserDto,
+        data: {
+          ...data,
+          avatar: imgData
+            ? {
+                upsert: {
+                  create: imgData,
+                  update: imgData,
+                },
+              }
+            : {},
+        },
         select,
       });
     } catch (error) {
@@ -78,10 +103,20 @@ export class UsersService {
 
   async delete(id: string): Promise<User> {
     try {
-      return await this.prisma.user.delete({
+      const deleteAvatar = this.prisma.avatar.delete({
+        where: { userId: id },
+      });
+      const deleteUser = this.prisma.user.delete({
         where: { id },
         select,
       });
+
+      const transaction = await this.prisma.$transaction([
+        deleteAvatar,
+        deleteUser,
+      ]);
+
+      return transaction[1];
     } catch (error) {
       throw new NotFoundException(`User ${id} not found`);
     }
