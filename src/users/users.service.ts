@@ -4,8 +4,6 @@ import { CreateUserDto, UpdateUserDto } from './entities/user.dto';
 import { SignUser, User } from './entities/user.entity';
 import { ImgData } from '../types/image.data';
 
-// const av: AvatarCreateNestedOneWithoutUserInput;
-
 const select = {
   id: true,
   email: true,
@@ -20,6 +18,34 @@ const select = {
   avatar: {
     select: {
       publicId: true,
+    },
+  },
+};
+
+const selectFull = {
+  id: true,
+  email: true,
+  role: true,
+  tasks: {
+    select: {
+      id: true,
+      title: true,
+      isDone: true,
+    },
+  },
+  avatar: {
+    select: {
+      publicId: true,
+      folder: true,
+      fieldName: true,
+      originalName: true,
+      secureUrl: true,
+      resourceType: true,
+      mimetype: true,
+      format: true,
+      height: true,
+      width: true,
+      bytes: true,
     },
   },
 };
@@ -42,7 +68,7 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select,
+      select: selectFull,
     });
 
     if (!user) {
@@ -100,7 +126,6 @@ export class UsersService {
       throw new NotFoundException(`User ${id} not found`);
     }
   }
-
   async delete(id: string): Promise<User> {
     try {
       const deleteAvatar = this.prisma.avatar.delete({

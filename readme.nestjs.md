@@ -157,7 +157,6 @@ Resultado obtenido en los dos días de clase:
   - Validaciones de los DTOs
   - Autenticación de usuarios (Login)
 
-
 Objetivos:
 
 - Autorización: Roles y Permisos
@@ -218,10 +217,13 @@ Para usarlos en todas las rutas, se pueden añadir de forma global en el modulo 
 
 - Se modifican los métodos del servicio de acuerdo con los cambios:
   - create y update para que reciban la información de la imagen y la guarden en la DB
-  - delete para que elimine la imagen del usuario que va a ser eliminado, creando con ambos procesos una transacción 
+  - delete para que elimine la imagen del usuario que va a ser eliminado, creando con ambos procesos una transacción
 
+### Seed
 
-- 
+- Se añade un script seed para añadir datos de prueba a la base de datos
+- Se añade un comando seed en el package.json para ejecutar el script
+
 ### Gestión de errores
 
 - Gestión de Errores (Middleware de errores):
