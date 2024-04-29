@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { LogMiddleware } from './log.middleware';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 describe('LogMiddleware', () => {
   const logger = new Logger();
@@ -13,7 +13,9 @@ describe('LogMiddleware', () => {
       originalUrl: 'http://localhost:3000',
       method: 'GET',
     } as Request;
-    const res = {} as globalThis.Response;
+    const res = {
+      on: jest.fn().mockImplementation((event, cb) => cb()),
+    } as unknown as Response;
     const next = jest.fn();
     jest.spyOn(logger, 'log');
     logMiddleware.use(req, res, next);

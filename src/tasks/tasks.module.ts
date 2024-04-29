@@ -1,8 +1,8 @@
 import { Logger, Module } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { TasksController } from './tasks.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { CoreModule } from 'src/core/core.module';
+import { PrismaModule } from '../prisma/prisma.module';
+import { CoreModule } from '../core/core.module';
 
 export type RepoFindId = {
   findById(id: string): Promise<any>;

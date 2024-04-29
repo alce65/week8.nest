@@ -219,11 +219,6 @@ Para usarlos en todas las rutas, se pueden añadir de forma global en el modulo 
   - create y update para que reciban la información de la imagen y la guarden en la DB
   - delete para que elimine la imagen del usuario que va a ser eliminado, creando con ambos procesos una transacción
 
-### Seed
-
-- Se añade un script seed para añadir datos de prueba a la base de datos
-- Se añade un comando seed en el package.json para ejecutar el script
-
 ### Gestión de errores
 
 - Gestión de Errores (Middleware de errores):
@@ -232,3 +227,34 @@ Para usarlos en todas las rutas, se pueden añadir de forma global en el modulo 
   - el decorador `@HttpCode` para devolver un código de estado HTTP adecuado.
   
   - se pueden manejar con un middleware de errores. Para ello, se añade un middleware de errores al módulo principal de la aplicación con el decorador `@Catch` y se añade al array de `providers`. El middleware de errores debe implementar la interfaz `ExceptionFilter` y sobre-escribir el método `catch` para manejar los errores.
+
+### Seed
+
+- Se añade un script seed para añadir datos de prueba a la base de datos
+- Se añade un comando seed en el package.json para ejecutar el script
+
+### Variables en diversos Entornos
+
+- Se añaden diversos archivos .env para las variables de diferentes entornos entorno
+  - .development.env
+  - .production.env
+  - .test.env
+
+- Se modifica la importación del ConfigModule en app.module.ts para que cargue las variables de entorno adecuadas en función del entorno de la aplicación:
+
+```ts
+  ConfigModule.forRoot({ 
+    envFilePath: `.${process.env.NODE_ENV}.env` })
+```
+
+- Con ayuda de `cross-env` se puede cambiar el entorno de ejecución en el script de arranque de la aplicación:
+
+```json
+  "start:dev": "cross-env NODE_ENV=development nest start --watch",
+  "start:prod": "cross-env NODE_ENV=production nest start",
+  "start:test": "cross-env NODE_ENV=test jest",
+```
+
+Donde sea necesario acceder a las variables de entorno, se inyecta el servicio **ConfigService** y se utilizan los métodos `get` o `getOrFail` para acceder a las variables de entorno.
+
+En el caso de main.ts, puede hacerse con `app.get(ConfigService)`

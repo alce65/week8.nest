@@ -8,7 +8,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LogGuard } from './core/logger/log.guard';
 import { LogInterceptor } from './core/logger/log.interceptor';
 import { CoreModule } from './core/core.module';
-import { config } from 'process';
+// import { config } from 'process';
 import { LogMiddleware } from './core/logger/log.middleware';
 
 @Module({
@@ -38,7 +38,7 @@ import { LogMiddleware } from './core/logger/log.middleware';
 export class AppModule implements NestModule {
   constructor(private readonly logger: Logger) {
     this.logger.debug('Instantiated', 'AppModule');
-    config;
+    // config;
   }
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LogMiddleware).forRoutes('*');
