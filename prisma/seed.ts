@@ -116,7 +116,7 @@ const usersData: Prisma.UserCreateInput[] = [
   },
   {
     // name: 'sara',
-    email: 'sara@prisma.io',
+    email: 'sara@prisma.com',
     password: hashSync('12345', 10),
     tasks: {
       create: [
@@ -141,15 +141,15 @@ async function main() {
   const deleteUsers = await prisma.user.deleteMany({});
   console.log(`Deleted ${deleteUsers.count} users`);
 
-  await Promise.all(
-    usersData.map(async (userData) => {
-      console.log(`Creating user: ${userData.email}`);
-      const user = await prisma.user.create({
-        data: userData,
-      });
-      console.log(`Created user with id: ${user.id}`);
-    }),
-  );
+  for (let i = 0; i < usersData.length; i++) {
+    const data = usersData[i];
+    console.log(`Creating user: ${data.email}`);
+    const user = await prisma.user.create({
+      data,
+    });
+    console.log(`Created user with id: ${user.id}`);
+  }
+
   console.log(`Seeding finished.`);
 }
 
